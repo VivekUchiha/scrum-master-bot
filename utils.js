@@ -1,5 +1,5 @@
-const authToken = '';
+require('dotenv').config();
 
 module.exports = {
-	authToken: authToken,
+	authToken: process.env.BOT_TOKEN,
 };
