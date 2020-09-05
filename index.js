@@ -9,7 +9,7 @@ client.once('ready', () => {
 
 client.members = new Discord.Collection();
 
-fs.readdir('./events',(err, files)=>{
+fs.readdir('./events', (err, files) => {
 	if (err) return console.error(err);
 	files.forEach(file => {
 		const event = require(`./events/${file}`)
