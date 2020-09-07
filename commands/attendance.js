@@ -2,9 +2,9 @@ module.exports = {
     name: "start_attendance",
     execute(client, message, args) {
         if(message.member.roles.cache.some(role => role.name === "ScrumMaster")){
-            console.log(message);
 
             client.isScrumHappening = true;
+            client.mom = new Map();
 
             const filterReactions = (reaction, user) => {
                 return user.id != undefined;
@@ -18,7 +18,7 @@ module.exports = {
             });
 
             client.collector.on('end', collected => {
-                console.log(client.attendees);
+                // console.log(client.attendees);
                 message.channel.send(Array.from(client.attendees.keys()) + " in the scrum");
             }); 
             
