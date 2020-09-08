@@ -1,5 +1,7 @@
+const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'start_scrum',
+	adminOnly:true,
 	execute(client, message, args) {
 		if(message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 
@@ -39,7 +41,10 @@ module.exports = {
 										AttendanceList += `${count++}) ${member.user.username} \n`;
 									}
 								});
-								message.channel.send(AttendanceList);
+								const embed = new MessageEmbed()
+									.setTitle('Scrum Attendance')
+									.setDescription(AttendanceList);
+								message.channel.send(embed);
 							});
 
 					});

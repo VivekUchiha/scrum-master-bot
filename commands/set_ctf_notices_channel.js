@@ -1,5 +1,6 @@
 module.exports = {
 	name: 'set_ctf_notices_channel',
+	adminOnly:true,
 	execute(client, message, args) {
 		if(message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 			client.ctfNoticesChannel = message.channel;
