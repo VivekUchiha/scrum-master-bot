@@ -1,6 +1,6 @@
 module.exports = {
-    name: 'ping',
-    execute(client, message, args){
-        message.channel.send("sup");
-    }
-}
+	name: 'ping',
+	execute(client, message, args) {
+		message.channel.send('sup');
+	},
+};

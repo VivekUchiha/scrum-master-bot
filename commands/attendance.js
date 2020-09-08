@@ -1,37 +1,62 @@
 module.exports = {
-    name: "start_attendance",
-    execute(client, message, args) {
-        if(message.member.roles.cache.some(role => role.name === "ScrumMaster")){
+	name: 'start_scrum',
+	execute(client, message, args) {
+		if(message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 
-            client.isScrumHappening = true;
-            client.mom = new Map();
+			client.isScrumHappening = true;
+			client.mom = new Map();
 
-            const filterReactions = (reaction, user) => {
-                return user.id != undefined;
-            }
+			const filterReactions = (reaction, user) => {
+				return user.id != undefined;
+			};
+			message.channel.send('The Scrum has started. React to this message if you\'re here :eyes:')
+				.then((AttendanceMessage) => {
+					client.collector = AttendanceMessage.createReactionCollector(filterReactions);
 
-            client.collector = message.createReactionCollector(filterReactions);
+					client.collector.on('collect', (reaction, user) => {
+						console.log(`Collected ${reaction.emoji.name} from ${user}`);
+						if(!client.attendees.has(user)) client.attendees.set(user, getFormatedTime(Date.now()));
+					});
 
-            client.collector.on('collect', (reaction, user) => {
-                console.log(`Collected ${reaction.emoji.name} from ${user.tag}`);
-                if(!client.attendees.has(user.tag)) client.attendees.set(user.tag, getFormatedTime(Date.now()));
-            });
+					client.collector.on('end', collected => {
+						// console.log(client.attendees);
+						const Attendees = Array.from(client.attendees.keys());
 
-            client.collector.on('end', collected => {
-                // console.log(client.attendees);
-                message.channel.send(Array.from(client.attendees.keys()) + " in the scrum");
-            }); 
-            
-        } else {
-            message.channel.send("You are not the Real Scrum Master");
-        }
-    }
-}
+						let AttendanceList = 'Members present for today\'s scrum \n';
+
+						Attendees.forEach((attendee, index) => {
+							AttendanceList += `${index + 1}) ${attendee.username} \n`;
+						});
+
+						AttendanceList += '\n Members not present for today\'s scrum \n';
+
+						let count = 1;
+
+						message.guild.members.fetch()
+							.then((members) => {
+								members.forEach((member) => {
+									if(member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
+										AttendanceList += `${count++}) ${member.user.username} \n`;
+									}
+								});
+								message.channel.send(AttendanceList);
+							});
+
+					});
+				});
+
+
+		}
+		else {
+			message.channel.send('You are not the Scrum Master');
+		}
+	},
+};
 
 function getFormatedTime(unixTimeStamp) {
-    var date = new Date(unixTimeStamp);
-    var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
-    return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+	const date = new Date(unixTimeStamp);
+	const hours = date.getHours();
+	const minutes = '0' + date.getMinutes();
+	const seconds = '0' + date.getSeconds();
+	return hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
 }
