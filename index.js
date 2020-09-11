@@ -5,6 +5,7 @@ const fs = require('fs');
 
 client.once('ready', () => {
 	console.log('Ready!');
+	require('./jobs/ctfEvent').startJob(client);
 });
 
 client.members = new Discord.Collection();
