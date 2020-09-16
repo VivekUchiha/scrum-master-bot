@@ -1,7 +1,7 @@
 module.exports = {
 	name: 'set_ctf_notices_channel',
 	adminOnly:true,
-	execute(client, message, args) {
+	execute(client, message) {
 		if(message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 			client.ctfNoticesChannel = message.channel;
 			message.channel.send('CTF reminder channel set');

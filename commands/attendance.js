@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'start_scrum',
 	adminOnly: true,
-	execute(client, message, args) {
+	execute(client, message) {
 		try {
 			if (message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 
@@ -21,7 +21,7 @@ module.exports = {
 							if (!client.attendees.has(user)) client.attendees.set(user, getFormatedTime(Date.now()));
 						});
 
-						client.collector.on('end', collected => {
+						client.collector.on('end', () => {
 							// console.log(client.attendees);
 							const Attendees = Array.from(client.attendees.keys());
 
@@ -38,6 +38,7 @@ module.exports = {
 							message.guild.members.fetch()
 								.then((members) => {
 									members.forEach((member) => {
+										// eslint-disable-next-line max-nested-callbacks
 										if (member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
 											AttendanceList += `${count++}) ${member.user.username} \n`;
 										}
