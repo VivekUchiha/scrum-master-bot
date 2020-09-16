@@ -1,60 +1,66 @@
 const { MessageEmbed } = require('discord.js');
 module.exports = {
 	name: 'start_scrum',
-	adminOnly:true,
+	adminOnly: true,
 	execute(client, message, args) {
-		if(message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
+		try {
+			if (message.member.roles.cache.some(role => role.name === 'Real Scrum Master')) {
 
-			client.isScrumHappening = true;
-			client.mom = new Map();
+				client.isScrumHappening = true;
+				client.mom = new Map();
 
-			const filterReactions = (reaction, user) => {
-				return user.id != undefined;
-			};
-			message.channel.send('The Scrum has started. React to this message if you\'re here :eyes:')
-				.then((AttendanceMessage) => {
-					client.collector = AttendanceMessage.createReactionCollector(filterReactions);
+				const filterReactions = (reaction, user) => {
+					return user.id != undefined;
+				};
+				message.channel.send('The Scrum has started. React to this message if you\'re here :eyes:')
+					.then((AttendanceMessage) => {
+						client.collector = AttendanceMessage.createReactionCollector(filterReactions);
 
-					client.collector.on('collect', (reaction, user) => {
-						console.log(`Collected ${reaction.emoji.name} from ${user}`);
-						if(!client.attendees.has(user)) client.attendees.set(user, getFormatedTime(Date.now()));
-					});
-
-					client.collector.on('end', collected => {
-						// console.log(client.attendees);
-						const Attendees = Array.from(client.attendees.keys());
-
-						let AttendanceList = 'Members present for today\'s scrum \n';
-
-						Attendees.forEach((attendee, index) => {
-							AttendanceList += `${index + 1}) ${attendee.username} \n`;
+						client.collector.on('collect', (reaction, user) => {
+							console.log(`Collected ${reaction.emoji.name} from ${user}`);
+							if (!client.attendees.has(user)) client.attendees.set(user, getFormatedTime(Date.now()));
 						});
 
-						AttendanceList += '\n Members not present for today\'s scrum \n';
+						client.collector.on('end', collected => {
+							// console.log(client.attendees);
+							const Attendees = Array.from(client.attendees.keys());
 
-						let count = 1;
+							let AttendanceList = 'Members present for today\'s scrum \n';
 
-						message.guild.members.fetch()
-							.then((members) => {
-								members.forEach((member) => {
-									if(member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
-										AttendanceList += `${count++}) ${member.user.username} \n`;
-									}
-								});
-								const embed = new MessageEmbed()
-									.setTitle('Scrum Attendance')
-									.setDescription(AttendanceList);
-								message.channel.send(embed);
+							Attendees.forEach((attendee, index) => {
+								AttendanceList += `${index + 1}) ${attendee.username} \n`;
 							});
 
+							AttendanceList += '\n Members not present for today\'s scrum \n';
+
+							let count = 1;
+
+							message.guild.members.fetch()
+								.then((members) => {
+									members.forEach((member) => {
+										if (member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
+											AttendanceList += `${count++}) ${member.user.username} \n`;
+										}
+									});
+									const embed = new MessageEmbed()
+										.setTitle('Scrum Attendance')
+										.setDescription(AttendanceList);
+									message.channel.send(embed);
+								});
+
+						});
 					});
-				});
 
 
+			}
+			else {
+				message.channel.send('You are not the Scrum Master');
+			}
 		}
-		else {
-			message.channel.send('You are not the Scrum Master');
+		catch (err) {
+			console.log(err);
 		}
+
 	},
 };
 
