@@ -4,7 +4,7 @@ module.exports = (client, message) => {
 
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-	const args = message.content.toLowerCase().slice(prefix.length).trim().split(/ +/);
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
 
 	const cmd = client.commands.get(command);
