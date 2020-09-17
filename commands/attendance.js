@@ -25,26 +25,25 @@ module.exports = {
 							// console.log(client.attendees);
 							const Attendees = Array.from(client.attendees.keys());
 
-							let AttendanceList = 'Members present for today\'s scrum \n';
+							let PresentList = 'Members present for today\'s scrum \n';
 
-							Attendees.forEach((attendee, index) => {
-								AttendanceList += `${index + 1}) ${attendee.username} \n`;
-							});
+							let AbsentList = '\n Members not present for today\'s scrum \n';
 
-							AttendanceList += '\n Members not present for today\'s scrum \n';
-
-							let count = 1;
+							let PresentCount = 1, AbsentCount = 1;
 
 							message.guild.members.fetch()
 								.then((members) => {
 									members.forEach((member) => {
-										if (member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
-											AttendanceList += `${count++}) ${member.user.username} \n`;
+										if(Attendees.includes(member.user)) {
+											PresentList += `${PresentCount++}) ${member.displayName} \n`;
+										}
+										else if (member.roles.cache.some(role => role.name === 'Current') && (!Attendees.includes(member.user))) {
+											AbsentList += `${AbsentCount++}) ${member.displayName} \n`;
 										}
 									});
 									const embed = new MessageEmbed()
 										.setTitle('Scrum Attendance')
-										.setDescription(AttendanceList);
+										.setDescription(PresentList + AbsentList);
 									message.channel.send(embed);
 								});
 

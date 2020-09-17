@@ -5,7 +5,12 @@ module.exports = {
 		const momArray = Array.from(Client.mom.values());
 		let momString = '';
 		momArray.forEach(mess => {
-			momString += mess.author.username + ': ' + mess.content + '\n\n';
+			try{
+				momString += mess.member.displayName + ': ' + mess.content + '\n\n';
+			}
+			catch(err) {
+				console.log(err);
+			}
 		});
 		if(momString != '') {
 			const embed = new MessageEmbed()
