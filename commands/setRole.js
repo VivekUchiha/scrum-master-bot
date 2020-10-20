@@ -27,6 +27,16 @@ module.exports = {
 				mem.roles.remove(AlumniRole);
 				message.channel.send('Current role set');
 				break;
+			case 'among-us': {
+				const amongUsRole = mem.guild.roles.cache.find(role => role.name === 'among-us');
+				mem.roles.add(amongUsRole);
+				break;
+			}
+			case 'rocket-league': {
+				const rocketLeagueRole = mem.guild.roles.cache.find(role => role.name === 'rocket-league');
+				mem.roles.add(rocketLeagueRole);
+				break;
+			}
 			default:
 				message.channel.send('You had one job  -_-');
 				break;
